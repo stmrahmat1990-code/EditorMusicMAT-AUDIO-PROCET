@@ -1,0 +1,990 @@
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>EditorMusicDJ FROM:MAT AUDIO PROJECT</title>
+<script src="https://cdn.jsdelivr.net/npm/lamejs@1.2.1/lame.min.js"></script>
+
+<style>
+*{box-sizing:border-box}
+body{
+    margin:0;
+    background:#10111a;
+    color:#f1f2f9;
+    font-family:Arial,sans-serif;
+}
+button,input,select{font:inherit}
+.app{
+    max-width:1050px;
+    margin:auto;
+    padding:25px 18px 45px;
+}
+header{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:25px;
+}
+.logo{
+    display:flex;
+    align-items:center;
+    gap:12px;
+}
+.logo-icon{
+    width:43px;height:43px;
+    display:grid;place-items:center;
+    background:#292247;
+    border-radius:13px;
+    color:#b99cff;
+    font-size:23px;
+}
+h1{font-size:21px;margin:0}
+.subtitle{font-size:12px;color:#888ba0;margin-top:5px}
+.status{
+    font-size:11px;
+    color:#7ee6b0;
+    background:#17352c;
+    padding:8px 12px;
+    border-radius:20px;
+}
+.grid{
+    display:grid;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:15px;
+}
+.card{
+    background:#191b28;
+    border:1px solid #292b3c;
+    border-radius:16px;
+    padding:19px;
+    min-width:0;
+}
+.full{grid-column:1/-1}
+.card-head{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:17px;
+}
+.card-title{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    font-size:15px;
+    font-weight:bold;
+}
+.icon{
+    width:35px;height:35px;
+    display:grid;place-items:center;
+    border-radius:11px;
+    background:#29233e;
+    color:#b99cff;
+    font-size:17px;
+}
+.small{font-size:11px;color:#898ca2}
+.filebox{
+    border:1px dashed #45425d;
+    background:#202132;
+    border-radius:12px;
+    padding:18px;
+    text-align:center;
+}
+input[type=file]{
+    max-width:100%;
+    color:#b9bbca;
+    font-size:12px;
+}
+.file-name{
+    margin-top:12px;
+    font-size:13px;
+    overflow-wrap:anywhere;
+}
+.player{
+    margin-top:15px;
+    background:#202132;
+    padding:15px;
+    border-radius:12px;
+}
+.player-info{
+    display:flex;
+    justify-content:space-between;
+    gap:10px;
+    align-items:center;
+    margin-bottom:15px;
+}
+#trackName{
+    font-size:14px;
+    font-weight:bold;
+    overflow-wrap:anywhere;
+}
+.play-controls{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    gap:15px;
+    margin-top:12px;
+}
+button{
+    border:0;
+    cursor:pointer;
+    border-radius:10px;
+    padding:10px 15px;
+    color:white;
+    background:#34364b;
+}
+button:hover{filter:brightness(1.15)}
+button:disabled{opacity:.4;cursor:not-allowed}
+.play{
+    background:#865cf4;
+    width:46px;height:46px;
+    font-size:19px;
+    border-radius:50%;
+}
+.primary{
+    background:#8055ed;
+    font-weight:bold;
+}
+.range-row{margin:18px 0}
+.range-label{
+    display:flex;
+    justify-content:space-between;
+    gap:10px;
+    font-size:12px;
+    margin-bottom:10px;
+}
+.range-value{
+    color:#ba9cff;
+    font-weight:bold;
+}
+input[type=range]{
+    width:100%;
+    accent-color:#a17bff;
+    cursor:pointer;
+}
+input[type=checkbox]{
+    accent-color:#9d7bff;
+    width:16px;height:16px;
+}
+.toggle{
+    display:flex;
+    align-items:center;
+    gap:7px;
+    color:#b9bbca;
+    font-size:11px;
+}
+.eq-grid{
+    display:grid;
+    grid-template-columns:repeat(6,minmax(0,1fr));
+    gap:12px;
+}
+.eq-band{
+    text-align:center;
+    background:#202132;
+    padding:13px 5px;
+    border-radius:12px;
+}
+.eq-band input{
+    writing-mode:vertical-lr;
+    direction:rtl;
+    height:125px;
+    width:24px;
+    margin:12px auto;
+}
+.eq-band strong{
+    display:block;
+    font-size:12px;
+}
+.eq-band small{
+    display:block;
+    color:#aaa0ca;
+    font-size:11px;
+}
+.export-settings{
+    display:flex;
+    flex-wrap:wrap;
+    gap:12px;
+    align-items:center;
+}
+select{
+    padding:10px;
+    background:#252639;
+    color:white;
+    border:1px solid #44455c;
+    border-radius:9px;
+}
+.export-button{
+    width:100%;
+    margin-top:16px;
+    padding:15px;
+    background:linear-gradient(110deg,#7954e9,#a15ce9);
+    font-weight:bold;
+    letter-spacing:.5px;
+}
+progress{
+    width:100%;
+    height:9px;
+    margin-top:15px;
+    accent-color:#9c76ff;
+}
+#status{
+    margin-top:15px;
+    background:#202132;
+    padding:13px;
+    border-radius:10px;
+    font-size:12px;
+    color:#bdb5d5;
+    overflow-wrap:anywhere;
+}
+@media(max-width:650px){
+    .grid{grid-template-columns:1fr}
+    .full{grid-column:auto}
+    .eq-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+    .app{padding:18px 12px}
+}
+</style>
+</head>
+
+<body>
+<div class="app">
+
+<header>
+    <div class="logo">
+        <div class="logo-icon">♫</div>
+        <div>
+            <h1>Audio FX Studio</h1>
+            <div class="subtitle">Audio processing workspace</div>
+        </div>
+    </div>
+    <div class="status" id="readyStatus">● READY</div>
+</header>
+
+<div class="grid">
+
+<!-- IMPORT & PLAYER -->
+<section class="card full">
+    <div class="card-head">
+        <div class="card-title">
+            <div class="icon">♫</div>
+            Audio Player
+        </div>
+        <span class="small">MP3 / M4A</span>
+    </div>
+
+    <div class="filebox">
+        <input type="file" id="fileInput"
+        accept=".mp3,.m4a,audio/mpeg,audio/mp4,audio/x-m4a">
+        <div class="file-name" id="fileInfo">Pilih file audio untuk memulai</div>
+    </div>
+
+    <div class="player">
+        <div class="player-info">
+            <div>
+                <div class="small">NOW PLAYING</div>
+                <div id="trackName">No audio loaded</div>
+            </div>
+            <div class="small" id="timeDisplay">00:00 / 00:00</div>
+        </div>
+
+        <input type="range" id="seek" min="0" max="1000" value="0">
+
+        <div class="play-controls">
+            <button id="stopBtn" disabled>■</button>
+            <button id="playBtn" class="play" disabled>▶</button>
+        </div>
+    </div>
+</section>
+
+<!-- DISTORTION -->
+<section class="card">
+    <div class="card-head">
+        <div class="card-title">
+            <div class="icon">〰</div>
+            Distortion
+        </div>
+        <label class="toggle">
+            <input type="checkbox" id="distOn">
+            ON
+        </label>
+    </div>
+
+    <div class="range-row">
+        <div class="range-label">
+            Drive
+            <span class="range-value" id="driveVal">0%</span>
+        </div>
+        <input type="range" id="drive" min="0" max="100" value="0">
+    </div>
+</section>
+
+<!-- REVERB -->
+<section class="card">
+    <div class="card-head">
+        <div class="card-title">
+            <div class="icon">◉</div>
+            Reverb
+        </div>
+        <label class="toggle">
+            <input type="checkbox" id="reverbOn">
+            ON
+        </label>
+    </div>
+
+    <div class="range-row">
+        <div class="range-label">
+            Wet
+            <span class="range-value" id="reverbVal">20%</span>
+        </div>
+        <input type="range" id="reverb" min="0" max="100" value="20">
+    </div>
+
+    <div class="range-row">
+        <div class="range-label">
+            Decay
+            <span class="range-value" id="decayVal">2.0 s</span>
+        </div>
+        <input type="range" id="decay" min="1" max="8" step=".1" value="2">
+    </div>
+</section>
+
+<!-- ECHO -->
+<section class="card">
+    <div class="card-head">
+        <div class="card-title">
+            <div class="icon">↻</div>
+            Echo
+        </div>
+        <label class="toggle">
+            <input type="checkbox" id="echoOn">
+            ON
+        </label>
+    </div>
+
+    <div class="range-row">
+        <div class="range-label">
+            Wet
+            <span class="range-value" id="echoVal">0%</span>
+        </div>
+        <input type="range" id="echo" min="0" max="100" value="0">
+    </div>
+
+    <div class="range-row">
+        <div class="range-label">
+            Delay
+            <span class="range-value" id="delayVal">300 ms</span>
+        </div>
+        <input type="range" id="delay" min="50" max="1000" value="300">
+    </div>
+
+    <div class="range-row">
+        <div class="range-label">
+            Feedback
+            <span class="range-value" id="feedbackVal">30%</span>
+        </div>
+        <input type="range" id="feedback" min="0" max="85" value="30">
+    </div>
+</section>
+
+<!-- MASTER -->
+<section class="card">
+    <div class="card-head">
+        <div class="card-title">
+            <div class="icon">◖</div>
+            Master Volume
+        </div>
+    </div>
+
+    <div class="range-row">
+        <div class="range-label">
+            Output Level
+            <span class="range-value" id="volumeVal">100%</span>
+        </div>
+        <input type="range" id="volume" min="0" max="100" value="100">
+    </div>
+    <p class="small">Mengatur volume akhir hasil pemrosesan.</p>
+</section>
+
+<!-- EQ -->
+<section class="card full">
+    <div class="card-head">
+        <div class="card-title">
+            <div class="icon">▥</div>
+            6-Band Equalizer
+        </div>
+        <label class="toggle">
+            <input type="checkbox" id="eqOn" checked>
+            ON
+        </label>
+    </div>
+
+    <div class="eq-grid" id="eqGrid"></div>
+    <button id="resetEQ" style="margin-top:15px">Reset EQ</button>
+</section>
+
+<!-- EXPORT -->
+<section class="card full">
+    <div class="card-head">
+        <div class="card-title">
+            <div class="icon">⇩</div>
+            Export Audio
+        </div>
+        <span class="small">MP3 FORMAT</span>
+    </div>
+
+    <div class="export-settings">
+        <label class="small">Bitrate</label>
+        <select id="bitrate">
+            <option value="128">128 kbps</option>
+            <option value="192" selected>192 kbps</option>
+            <option value="256">256 kbps</option>
+            <option value="320">320 kbps</option>
+        </select>
+    </div>
+
+    <button class="export-button" id="exportBtn" disabled>
+        ⇩ &nbsp; EXPORT MP3
+    </button>
+
+    <progress id="progress" value="0" max="100"></progress>
+    <div class="small" id="exportInfo">Menunggu file audio...</div>
+</section>
+
+</div>
+
+<div id="status">Status: Aplikasi siap digunakan.</div>
+
+</div>
+
+<script>
+"use strict";
+
+const $ = id => document.getElementById(id);
+
+let buffer = null;
+let context = null;
+let source = null;
+let graph = null;
+let playing = false;
+let startedAt = 0;
+let pausedAt = 0;
+let audioToken = 0;
+let impulseCache = new Map();
+
+const frequencies = [40,60,230,910,1000,14000];
+const eqSliders = [];
+
+frequencies.forEach((freq,i)=>{
+    const div=document.createElement("div");
+    div.className="eq-band";
+
+    const label=freq>=1000 ? (freq/1000)+"k" : freq;
+
+    div.innerHTML=`
+        <strong>${label}</strong>
+        <input type="range" min="-12" max="12" step=".1" value="0">
+        <small id="eqVal${i}">0 dB</small>
+    `;
+
+    const slider=div.querySelector("input");
+
+    slider.addEventListener("input",()=>{
+        $("eqVal"+i).textContent=
+            Number(slider.value).toFixed(1)+" dB";
+        updateGraph();
+    });
+
+    eqSliders.push(slider);
+    $("eqGrid").appendChild(div);
+});
+
+function params(){
+    return {
+        drive:$("distOn").checked ? Number($("drive").value):0,
+        reverb:$("reverbOn").checked ? Number($("reverb").value)/100:0,
+        decay:Number($("decay").value),
+        echo:$("echoOn").checked ? Number($("echo").value)/100:0,
+        delay:Number($("delay").value)/1000,
+        feedback:Number($("feedback").value)/100,
+        volume:Number($("volume").value)/100,
+        eq:$("eqOn").checked ?
+            eqSliders.map(x=>Number(x.value)):
+            frequencies.map(()=>0)
+    };
+}
+
+function distortionCurve(amount){
+    const n=44100;
+    const curve=new Float32Array(n);
+    const k=amount*.25;
+
+    for(let i=0;i<n;i++){
+        const x=i*2/n-1;
+        curve[i]=k===0?x:
+            Math.tanh(x*(1+k*20))/Math.tanh(1+k*20);
+    }
+
+    return curve;
+}
+
+function getImpulse(ctx,decay){
+    const key=ctx.sampleRate+"_"+decay;
+
+    if(impulseCache.has(key))
+        return impulseCache.get(key);
+
+    const length=Math.floor(ctx.sampleRate*decay);
+    const impulse=ctx.createBuffer(2,length,ctx.sampleRate);
+
+    for(let c=0;c<2;c++){
+        const data=impulse.getChannelData(c);
+
+        for(let i=0;i<length;i++){
+            const envelope=Math.pow(1-i/length,2.5);
+            data[i]=(Math.random()*2-1)*envelope;
+        }
+    }
+
+    impulseCache.set(key,impulse);
+    return impulse;
+}
+
+function createGraph(ctx,destination){
+    const input=ctx.createGain();
+    const shaper=ctx.createWaveShaper();
+    shaper.oversample="4x";
+
+    const filters=frequencies.map(freq=>{
+        const f=ctx.createBiquadFilter();
+        f.type="peaking";
+        f.frequency.value=freq;
+        f.Q.value=1;
+        return f;
+    });
+
+    const dry=ctx.createGain();
+    const delay=ctx.createDelay(2);
+    const feedback=ctx.createGain();
+    const echoWet=ctx.createGain();
+
+    const convolver=ctx.createConvolver();
+    const reverbWet=ctx.createGain();
+
+    const master=ctx.createGain();
+    const compressor=ctx.createDynamicsCompressor();
+
+    compressor.threshold.value=-3;
+    compressor.knee.value=6;
+    compressor.ratio.value=4;
+    compressor.attack.value=.003;
+    compressor.release.value=.2;
+
+    input.connect(shaper);
+
+    let previous=shaper;
+
+    filters.forEach(f=>{
+        previous.connect(f);
+        previous=f;
+    });
+
+    previous.connect(dry);
+    dry.connect(master);
+
+    previous.connect(delay);
+    delay.connect(echoWet);
+    echoWet.connect(master);
+
+    delay.connect(feedback);
+    feedback.connect(delay);
+
+    previous.connect(convolver);
+    convolver.connect(reverbWet);
+    reverbWet.connect(master);
+
+    master.connect(compressor);
+    compressor.connect(destination);
+
+    function update(p){
+        shaper.curve=distortionCurve(p.drive);
+
+        filters.forEach((f,i)=>{
+            f.gain.setTargetAtTime(
+                p.eq[i],ctx.currentTime,.015
+            );
+        });
+
+        delay.delayTime.setTargetAtTime(
+            p.delay,ctx.currentTime,.015
+        );
+
+        feedback.gain.setTargetAtTime(
+            p.echo>0?p.feedback:0,ctx.currentTime,.015
+        );
+
+        echoWet.gain.setTargetAtTime(
+            p.echo,ctx.currentTime,.015
+        );
+
+        reverbWet.gain.setTargetAtTime(
+            p.reverb,ctx.currentTime,.015
+        );
+
+        dry.gain.setTargetAtTime(
+            1,ctx.currentTime,.015
+        );
+
+        master.gain.setTargetAtTime(
+            p.volume,ctx.currentTime,.015
+        );
+
+        convolver.buffer=getImpulse(ctx,p.decay);
+    }
+
+    return {input,update};
+}
+
+function updateGraph(){
+    if(graph)graph.update(params());
+}
+
+const display=[
+    ["drive","driveVal",v=>v+"%"],
+    ["reverb","reverbVal",v=>v+"%"],
+    ["decay","decayVal",v=>Number(v).toFixed(1)+" s"],
+    ["echo","echoVal",v=>v+"%"],
+    ["delay","delayVal",v=>v+" ms"],
+    ["feedback","feedbackVal",v=>v+"%"],
+    ["volume","volumeVal",v=>v+"%"]
+];
+
+display.forEach(([id,out,format])=>{
+    $(id).addEventListener("input",()=>{
+        $(out).textContent=format($(id).value);
+        updateGraph();
+    });
+});
+
+["distOn","reverbOn","echoOn","eqOn"].forEach(id=>{
+    $(id).addEventListener("change",updateGraph);
+});
+
+$("resetEQ").onclick=()=>{
+    eqSliders.forEach((s,i)=>{
+        s.value=0;
+        $("eqVal"+i).textContent="0 dB";
+    });
+    updateGraph();
+};
+
+// File import
+$("fileInput").addEventListener("change",async e=>{
+    const file=e.target.files[0];
+    if(!file)return;
+
+    stopAudio();
+
+    buffer=null;
+    audioToken++;
+
+    $("exportBtn").disabled=true;
+    $("playBtn").disabled=true;
+    $("stopBtn").disabled=true;
+
+    $("status").textContent="Membaca audio...";
+
+    try{
+        const C=window.AudioContext||window.webkitAudioContext;
+        const temp=new C();
+
+        try{
+            buffer=await temp.decodeAudioData(
+                await file.arrayBuffer()
+            );
+        }finally{
+            await temp.close();
+        }
+
+        $("trackName").textContent=file.name;
+        $("fileInfo").textContent=
+            buffer.duration.toFixed(2)+" detik • "+
+            buffer.sampleRate+" Hz • "+
+            buffer.numberOfChannels+" channel";
+
+        $("playBtn").disabled=false;
+        $("stopBtn").disabled=false;
+        $("exportBtn").disabled=false;
+
+        pausedAt=0;
+        updateTime();
+
+        $("status").textContent="Audio berhasil dimuat.";
+
+    }catch(err){
+        buffer=null;
+        $("status").textContent="Gagal membaca audio: "+err.message;
+    }
+});
+
+function stopAudio(){
+    audioToken++;
+
+    if(source){
+        source.onended=null;
+        try{source.stop()}catch(e){}
+        source.disconnect();
+        source=null;
+    }
+
+    if(context){
+        const old=context;
+        context=null;
+        old.close();
+    }
+
+    graph=null;
+    playing=false;
+    pausedAt=0;
+
+    $("playBtn").textContent="▶";
+    updateTime();
+}
+
+function updateTime(){
+    const duration=buffer?buffer.duration:0;
+    const current=playing&&context?
+        Math.min(duration,pausedAt+context.currentTime-startedAt):
+        pausedAt;
+
+    const fmt=t=>{
+        const m=Math.floor(t/60);
+        const s=Math.floor(t%60);
+        return String(m).padStart(2,"0")+":"+
+               String(s).padStart(2,"0");
+    };
+
+    $("timeDisplay").textContent=
+        fmt(current)+" / "+fmt(duration);
+
+    $("seek").value=duration?
+        Math.round(current/duration*1000):0;
+}
+
+async function startPlayback(){
+    if(!buffer)return;
+
+    const C=window.AudioContext||window.webkitAudioContext;
+    context=new C();
+
+    await context.resume();
+
+    graph=createGraph(context,context.destination);
+    graph.update(params());
+
+    source=context.createBufferSource();
+    source.buffer=buffer;
+    source.connect(graph.input);
+
+    const token=audioToken;
+
+    source.onended=()=>{
+        if(token!==audioToken)return;
+
+        playing=false;
+        pausedAt=0;
+        source=null;
+
+        if(context){
+            context.close();
+            context=null;
+        }
+
+        graph=null;
+        $("playBtn").textContent="▶";
+        updateTime();
+    };
+
+    startedAt=context.currentTime;
+    source.start(0,pausedAt);
+
+    playing=true;
+    $("playBtn").textContent="Ⅱ";
+
+    updateTime();
+}
+
+$("playBtn").onclick=async()=>{
+    if(!buffer)return;
+
+    if(playing){
+        pausedAt+=context.currentTime-startedAt;
+        const position=pausedAt;
+        stopAudio();
+        pausedAt=position;
+        updateTime();
+        return;
+    }
+
+    if(pausedAt>=buffer.duration)pausedAt=0;
+
+    try{
+        await startPlayback();
+    }catch(err){
+        stopAudio();
+        $("status").textContent="Playback error: "+err.message;
+    }
+};
+
+$("stopBtn").onclick=()=>{
+    stopAudio();
+};
+
+$("seek").addEventListener("change",()=>{
+    if(!buffer)return;
+
+    const position=Number($("seek").value)/1000*buffer.duration;
+    const wasPlaying=playing;
+
+    stopAudio();
+    pausedAt=position;
+
+    if(wasPlaying){
+        startPlayback().catch(err=>{
+            $("status").textContent=err.message;
+        });
+    }else{
+        updateTime();
+    }
+});
+
+setInterval(()=>{
+    if(playing)updateTime();
+},200);
+
+function toInt16(data){
+    const result=new Int16Array(data.length);
+
+    for(let i=0;i<data.length;i++){
+        const v=Math.max(-1,Math.min(1,data[i]));
+        result[i]=v<0?v*32768:v*32767;
+    }
+
+    return result;
+}
+
+async function renderAudio(){
+    const C=window.OfflineAudioContext||
+            window.webkitOfflineAudioContext;
+
+    if(!C)throw new Error("Offline Audio tidak didukung.");
+
+    const rate=44100;
+    const length=Math.ceil(buffer.duration*rate);
+
+    const offline=new C(2,length,rate);
+    const g=createGraph(offline,offline.destination);
+    g.update(params());
+
+    const src=offline.createBufferSource();
+    src.buffer=buffer;
+    src.connect(g.input);
+    src.start(0);
+
+    return await offline.startRendering();
+}
+
+$("exportBtn").onclick=async()=>{
+    if(!buffer)return;
+
+    if(typeof lamejs==="undefined"){
+        $("status").textContent=
+            "Encoder belum dimuat. Periksa koneksi internet.";
+        return;
+    }
+
+    stopAudio();
+
+    $("exportBtn").disabled=true;
+    $("playBtn").disabled=true;
+
+    $("progress").value=0;
+    $("exportInfo").textContent="Rendering audio...";
+
+    try{
+        const rendered=await renderAudio();
+
+        $("exportInfo").textContent="Encoding MP3...";
+
+        const bitrate=Number($("bitrate").value);
+        const encoder=new lamejs.Mp3Encoder(2,44100,bitrate);
+
+        const left=toInt16(rendered.getChannelData(0));
+        const right=toInt16(rendered.getChannelData(1));
+
+        const block=1152;
+        const chunks=[];
+
+        for(let i=0;i<left.length;i+=block){
+            const end=Math.min(i+block,left.length);
+
+            const encoded=encoder.encodeBuffer(
+                left.subarray(i,end),
+                right.subarray(i,end)
+            );
+
+            if(encoded.length){
+                chunks.push(new Uint8Array(encoded));
+            }
+
+            $("progress").value=
+                Math.floor(end/left.length*100);
+
+            if(i%(block*100)===0){
+                $("exportInfo").textContent=
+                    "Encoding MP3... "+$("progress").value+"%";
+
+                await new Promise(resolve=>setTimeout(resolve,0));
+            }
+        }
+
+        const final=encoder.flush();
+
+        if(final.length){
+            chunks.push(new Uint8Array(final));
+        }
+
+        const blob=new Blob(chunks,{type:"audio/mpeg"});
+
+        const original=$("fileInput").files[0].name;
+        const filename=original.replace(/\.[^.]+$/,"")+"_edited.mp3";
+
+        const url=URL.createObjectURL(blob);
+        const a=document.createElement("a");
+
+        a.href=url;
+        a.download=filename;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+
+        setTimeout(()=>URL.revokeObjectURL(url),60000);
+
+        $("progress").value=100;
+
+        $("exportInfo").textContent=
+            "Selesai • "+(blob.size/1048576).toFixed(2)+" MB";
+
+        $("status").textContent=
+            "Berhasil mengekspor "+filename;
+
+    }catch(err){
+        $("status").textContent="Export gagal: "+err.message;
+        $("exportInfo").textContent="Gagal memproses audio.";
+    }finally{
+        $("exportBtn").disabled=!buffer;
+        $("playBtn").disabled=!buffer;
+    }
+};
+</script>
+</body>
+</html>
